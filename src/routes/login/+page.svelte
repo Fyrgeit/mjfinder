@@ -1,0 +1,43 @@
+<script>
+    import { auth } from "../../firebase.js";
+    import { signInWithEmailAndPassword } from "firebase/auth";
+    import { goto } from "$app/navigation";
+
+    let email;
+    let password;
+
+    async function Submit() {
+        await signInWithEmailAndPassword(auth, email, password);
+        goto("/");
+    }
+</script>
+
+<h1>Logga in här</h1>
+
+<form on:submit|preventDefault={Submit}>
+    <p>
+        <label for="input-email">E-mailadress</label>
+        <input
+            type="email"
+            id="input-email"
+            autocomplete="email"
+            bind:value={email}
+        />
+    </p>
+    <p>
+        <label for="input-password">Lösenord</label>
+        <input
+            type="password"
+            id="input-password"
+            autocomplete="current-password"
+            bind:value={password}
+        />
+    </p>
+    <button>Logga in</button>
+</form>
+
+<p>Inget konto än?</p>
+<a href="/signup" class="button">Skapa konto</a>
+
+<style>
+</style>
