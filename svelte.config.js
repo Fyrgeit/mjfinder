@@ -9,8 +9,8 @@ const config = {
     adapter: adapter({
         // default options are shown. On some platforms
         // these options are set automatically — see below
-        pages: 'build',
-        assets: 'build/static',
+        pages: 'docs',
+        assets: 'docs/static',
         fallback: "404.html",
         precompress: false,
         strict: true
