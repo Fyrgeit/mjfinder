@@ -2,7 +2,7 @@
     import { userInfoStore } from "/src/store.js";
 
     export const tabs = [
-        { name: "Användare", path: "/users" },
+        { name: "Användare", path: `/users` },
         { name: "Klubbar", path: "/club" },
         { name: "Meddelande", path: "/chat" },
     ];

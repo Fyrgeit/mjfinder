@@ -14,7 +14,10 @@ const config = {
         strict: true
     }),
     paths: {
-        base: dev ? "" : "/mjfinder",
+        base: "/mjfinder",
+        //Får errors som klagar (vet inte var)
+        //Error: 404 / does not begin with `base`, which is configured in `paths.base` and can be imported from `$app/paths` - see https://kit.svelte.dev/docs/configuration#paths for more info (linked from /mjfinder/)
+        //Försvinner om base är ""
         relative: false
     }
   },
