@@ -34,7 +34,7 @@
         );
 
         chosenChat = chats[0];
-        handleChatChosen();
+        await handleChatChosen();
         return chats;
     }
 
@@ -126,25 +126,30 @@
     <div id="chat">
         <div id="messages">
             {#if chosenChat}
-                {#key messages}
-                    {#each messages as message}
-                        {console.log(chosenChat.cachedMembers)}
-                        {console.log(JSON.stringify(chosenChat.cachedMembers))}
-                        {console.log(message.data.sender.id)}
-                        {console.log(chosenChat.cachedMembers[message.data.sender.id])}
-                        <Message
-                            {message}
-                            user={chosenChat.cachedMembers[message.data.sender.id]}
-                            currentUid={userInfo.uid}
-                        />
-                    {/each}
-                {/key}
+                {#if messages}
+                    {#key messages}
+                        {#each messages as message}
+                            <Message
+                                {message}
+                                user={chosenChat.cachedMembers[
+                                    message.data.sender.id
+                                ]}
+                                currentUid={userInfo.uid}
+                            />
+                        {/each}
+                    {/key}
+                {/if}
             {:else}
                 <p>Välj en chatt från listan till vänster</p>
             {/if}
         </div>
         <form on:submit={sendMessage(newMessage)}>
-            <input type="text" id="message" bind:value={newMessage} />
+            <input
+                type="text"
+                id="message"
+                bind:value={newMessage}
+                autocomplete="off"
+            />
             <button>Skicka</button>
         </form>
     </div>

@@ -6,9 +6,9 @@
     $: time = new Date(message.data.time.seconds * 1000).toTimeString();
 </script>
 
-<p class:own={currentUid === user.uid}>
-    <a class="toned-down" href="/users/{user.uid}">
-        {user.data.username}
+<p class:own={currentUid === user?.uid}>
+    <a class="toned-down" href="/users/{user?.uid}">
+        {user?.data?.username}
     </a>
     <span class="message">
         {message.data.content}
