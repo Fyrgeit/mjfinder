@@ -5,7 +5,9 @@
     userInfoStore.subscribe((val) => (userInfo = val));
 </script>
 
-<p>Hej och välkommen till MJ Finder</p>
+<main>
+    <p>Hej och välkommen till MJ Finder</p>
+</main>
 
 <style>
 </style>
