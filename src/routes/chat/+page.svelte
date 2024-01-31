@@ -1,7 +1,16 @@
 <script>
-    import { doc, getDoc, getDocs, collection } from "firebase/firestore";
+    import {
+        doc,
+        getDoc,
+        getDocs,
+        collection,
+        addDoc,
+        Timestamp,
+    } from "firebase/firestore";
     import { db } from "../../firebase";
     import { userInfoStore } from "../../store";
+    import Message from "../../components/Message.svelte";
+    import { onMount } from "svelte";
 
     let userInfo;
     userInfoStore.subscribe((val) => {
@@ -25,34 +34,79 @@
         );
 
         chosenChat = chats[0];
+        handleChatChosen();
         return chats;
     }
 
     async function getMessages(uid) {
         const ref = collection(db, "chats", uid, "messages");
 
-        let messages = [];
+        messages = [];
 
         (await getDocs(ref)).forEach((doc) => {
-            messages.push({
-                uid: doc.id,
-                data: doc.data(),
-            });
+            messages = [
+                ...messages,
+                {
+                    uid: doc.id,
+                    data: doc.data(),
+                },
+            ];
         });
 
-        return messages;
+        messages.sort((a, b) => a.data.time.seconds - b.data.time.seconds);
     }
 
-    async function getUser(userRef) {
-        const doc = await getDoc(userRef);
+    async function getMember(memberRef) {
+        const userDoc = await getDoc(memberRef);
 
-        return {
-            uid: doc.id,
-            data: await doc.data(),
+        chosenChat.cachedMembers[memberRef.id] = {
+            uid: memberRef.id,
+            data: await userDoc.data(),
         };
     }
 
+    async function sendMessage(message) {
+        const collectionRef = collection(
+            db,
+            "chats",
+            chosenChat.uid,
+            "messages",
+        );
+
+        const messageData = {
+            content: message,
+            sender: doc(db, "users", userInfo.uid),
+            time: Timestamp.now(),
+        };
+
+        const docRef = await addDoc(collectionRef, messageData);
+
+        messages = [
+            ...messages,
+            {
+                uid: docRef.id,
+                data: messageData,
+            },
+        ];
+
+        newMessage = "";
+    }
+
+    async function handleChatChosen() {
+        if (chosenChat) {
+            chosenChat.cachedMembers = {};
+            for (let member of chosenChat.data.members) {
+                await getMember(member);
+            }
+
+            getMessages(chosenChat.uid);
+        }
+    }
+
     let chosenChat = null;
+    let newMessage = "";
+
+    let messages = [];
 </script>
 
 <main>
@@ -69,27 +123,30 @@
             {/each}
         {/await}
     </aside>
-    <div>
-        {#if chosenChat}
-            {#await getMessages(chosenChat.uid)}
-                <p>Hämtar chattar...</p>
-            {:then messages}
-                {#each messages as message}
-                    {#await getUser(message.data.sender)}
-                        <p>Hämtar meddelande...</p>
-                    {:then user}
-                        <p class="toned-down">
-                            {user.data.username}
-                        </p>
-                        <p>
-                            {message.data.content}
-                        </p>
-                    {/await}
-                {/each}
-            {/await}
-        {:else}
-            <p>Välj en chatt från listan till vänster</p>
-        {/if}
+    <div id="chat">
+        <div id="messages">
+            {#if chosenChat}
+                {#key messages}
+                    {#each messages as message}
+                        {console.log(chosenChat.cachedMembers)}
+                        {console.log(JSON.stringify(chosenChat.cachedMembers))}
+                        {console.log(message.data.sender.id)}
+                        {console.log(chosenChat.cachedMembers[message.data.sender.id])}
+                        <Message
+                            {message}
+                            user={chosenChat.cachedMembers[message.data.sender.id]}
+                            currentUid={userInfo.uid}
+                        />
+                    {/each}
+                {/key}
+            {:else}
+                <p>Välj en chatt från listan till vänster</p>
+            {/if}
+        </div>
+        <form on:submit={sendMessage(newMessage)}>
+            <input type="text" id="message" bind:value={newMessage} />
+            <button>Skicka</button>
+        </form>
     </div>
 </main>
 
@@ -115,5 +172,35 @@
         right: 0;
         z-index: -2;
         box-shadow: var(--color-shadow) 0 0 0.8rem;
+    }
+
+    #messages {
+        margin: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    #chat {
+        display: grid;
+        grid-template-rows: 1fr auto;
+    }
+
+    form {
+        box-shadow: none;
+        border-radius: 0;
+        border-top: 1px black solid;
+        width: auto;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.4rem;
+    }
+
+    form input {
+        margin: 0;
+    }
+
+    form button {
+        padding: 0.4rem;
     }
 </style>
