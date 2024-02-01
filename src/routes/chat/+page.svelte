@@ -33,8 +33,6 @@
             }),
         );
 
-        chosenChat = chats[0];
-        await handleChatChosen();
         return chats;
     }
 
@@ -66,6 +64,8 @@
     }
 
     async function sendMessage(message) {
+        newMessage = "";
+
         const collectionRef = collection(
             db,
             "chats",
@@ -78,9 +78,9 @@
             sender: doc(db, "users", userInfo.uid),
             time: Timestamp.now(),
         };
-
+        
         const docRef = await addDoc(collectionRef, messageData);
-
+        
         messages = [
             ...messages,
             {
@@ -88,8 +88,7 @@
                 data: messageData,
             },
         ];
-
-        newMessage = "";
+        
     }
 
     async function handleChatChosen() {
@@ -112,20 +111,29 @@
 <main>
     <aside>
         <h2>Chattar</h2>
-        <br />
         {#await getChats(userInfo?.data.chats)}
             <p>Hämtar chattar...</p>
         {:then chats}
             {#each chats as chat}
-                <button on:click={() => (chosenChat = chat)}>
+                <button
+                    on:click={async () => {
+                        chosenChat = chat;
+                        await handleChatChosen();
+                    }}
+                    class:hollow={chat.uid === chosenChat?.uid}
+                >
                     {chat.data.name}
                 </button>
             {/each}
         {/await}
+        <button>Skapa ny chatt</button>
     </aside>
     <div id="chat">
-        <div id="messages">
-            {#if chosenChat}
+        {#if chosenChat}
+            <div id="title">
+                <h1>{chosenChat.data.name}</h1>
+            </div>
+            <div id="messages">
                 {#if messages}
                     {#key messages}
                         {#each messages as message}
@@ -139,19 +147,19 @@
                         {/each}
                     {/key}
                 {/if}
-            {:else}
-                <p>Välj en chatt från listan till vänster</p>
-            {/if}
-        </div>
-        <form on:submit={sendMessage(newMessage)}>
-            <input
-                type="text"
-                id="message"
-                bind:value={newMessage}
-                autocomplete="off"
-            />
-            <button>Skicka</button>
-        </form>
+            </div>
+            <form on:submit={sendMessage(newMessage)}>
+                <input
+                    type="text"
+                    id="message"
+                    bind:value={newMessage}
+                    autocomplete="off"
+                />
+                <button>Skicka</button>
+            </form>
+        {:else}
+            <p>Välj en chatt från listan till vänster</p>
+        {/if}
     </div>
 </main>
 
@@ -160,12 +168,15 @@
         display: grid;
         grid-template-columns: auto 1fr;
         padding: 0;
-        min-height: calc(100% - 70.69px);
+        height: calc(100% - 70.69px);
     }
 
     aside {
         padding: 0.8rem;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
     }
 
     aside::before {
@@ -179,22 +190,29 @@
         box-shadow: var(--color-shadow) 0 0 0.8rem;
     }
 
+    #chat {
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+        justify-content: space-between;
+    }
+
+    #title {
+        padding: 0.8rem;
+    }
+
     #messages {
         margin: 0.8rem;
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
-    }
-
-    #chat {
-        display: grid;
-        grid-template-rows: 1fr auto;
+        max-height: calc(100vh - 13.8rem);
+        overflow-y: scroll;
     }
 
     form {
         box-shadow: none;
         border-radius: 0;
-        border-top: 1px black solid;
         width: auto;
         display: grid;
         grid-template-columns: 1fr auto;

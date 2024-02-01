@@ -37,6 +37,6 @@
         width: fit-content;
         padding: 0.4rem 0.6rem;
         box-shadow: var(--color-shadow) 0 0 0.4rem;
-        border-radius: 99rem;
+        border-radius: 1rem;
     }
 </style>
