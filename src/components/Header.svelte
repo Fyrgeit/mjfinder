@@ -4,7 +4,7 @@
     export const tabs = [
         { name: "Användare", path: `/users` },
         { name: "Klubbar", path: "/club" },
-        { name: "Meddelande", path: "/chat" },
+        //{ name: "Meddelande", path: "/chat" },
     ];
 
     let userInfo;

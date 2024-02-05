@@ -78,9 +78,9 @@
             sender: doc(db, "users", userInfo.uid),
             time: Timestamp.now(),
         };
-        
+
         const docRef = await addDoc(collectionRef, messageData);
-        
+
         messages = [
             ...messages,
             {
@@ -88,7 +88,6 @@
                 data: messageData,
             },
         ];
-        
     }
 
     async function handleChatChosen() {
@@ -102,10 +101,30 @@
         }
     }
 
+    async function getUsers() {
+        let users = [];
+
+        const collectionRef = collection(db, "users");
+
+        (await getDocs(collectionRef)).forEach((doc) => {
+            if (doc.id == userInfo.uid) return;
+
+            users.push({
+                uid: doc.id,
+                data: doc.data(),
+            });
+        });
+
+        return users;
+    }
+
     let chosenChat = null;
     let newMessage = "";
 
     let messages = [];
+
+    let newChatUsers = null;
+    let selectedUser;
 </script>
 
 <main>
@@ -126,7 +145,23 @@
                 </button>
             {/each}
         {/await}
-        <button>Skapa ny chatt</button>
+        {#if newChatUsers}
+            <form>
+                <select bind:value={selectedUser}>
+                    <option disabled selected value="null">Välj användare</option>
+                    {#each newChatUsers as user}
+                        <option value={user.uid}>
+                            {user.data.username}
+                        </option>
+                    {/each}
+                </select>
+                <button>Skapa chatt</button>
+            </form>
+        {:else}
+            <button on:click={async () => (newChatUsers = await getUsers())}
+                >Skapa ny chatt</button
+            >
+        {/if}
     </aside>
     <div id="chat">
         {#if chosenChat}
@@ -210,7 +245,7 @@
         overflow-y: scroll;
     }
 
-    form {
+    #chat form {
         box-shadow: none;
         border-radius: 0;
         width: auto;
