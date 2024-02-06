@@ -1,8 +1,9 @@
 <script>
     import { userInfoStore } from "/src/store.js";
+    import { base } from "$app/paths";
 
     export const tabs = [
-        { name: "Användare", path: `/users` },
+        { name: "Användare", path: "/users" },
         { name: "Klubbar", path: "/club" },
         //{ name: "Meddelande", path: "/chat" },
     ];
@@ -12,20 +13,20 @@
 </script>
 
 <header>
-    <a href="/">
-        <img src="/logo.svg" alt="MJ finder" />
+    <a href="{base}/">
+        <img src="{base}/logo.svg" alt="MJ finder" />
     </a>
     <nav>
         {#each tabs as tab}
-            <a href={tab.path}>{tab.name}</a>
+            <a href={base + tab.path}>{tab.name}</a>
         {/each}
     </nav>
     <aside>
         {#if userInfo?.data}
-            <a href="/profile" class="button">{userInfo.data.username}</a>
+            <a href="{base}/profile" class="button">{userInfo.data.username}</a>
         {:else}
-            <a href="/login" class="button hollow">Logga in</a>
-            <a href="/signup" class="button">Skapa konto</a>
+            <a href="{base}/login" class="button hollow">Logga in</a>
+            <a href="{base}/signup" class="button">Skapa konto</a>
         {/if}
     </aside>
 </header>

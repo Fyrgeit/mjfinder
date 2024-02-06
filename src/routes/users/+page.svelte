@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { db } from "../../firebase.js";
     import { collection, getDocs } from "firebase/firestore";
+    import { base } from "$app/paths";
 
     onMount(getUsers);
 
@@ -26,7 +27,7 @@
     <ul>
         {#each users as user}
             <li>
-                <a href="/users/{user.uid}" class="blob hoverable">{user.username}</a>
+                <a href="{base}/users/{user.uid}" class="blob hoverable">{user.username}</a>
             </li>
         {/each}
     </ul>

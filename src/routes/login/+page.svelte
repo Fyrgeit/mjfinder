@@ -2,13 +2,14 @@
     import { auth } from "../../firebase.js";
     import { signInWithEmailAndPassword } from "firebase/auth";
     import { goto } from "$app/navigation";
+    import { base } from "$app/paths";
 
     let email;
     let password;
 
     async function Submit() {
         await signInWithEmailAndPassword(auth, email, password);
-        goto("/");
+        goto(base + "/");
     }
 </script>
 
@@ -37,7 +38,7 @@
 </form>
 
 <p>Inget konto än?</p>
-<a href="/signup" class="button">Skapa konto</a>
+<a href="{base}/signup" class="button">Skapa konto</a>
 
 <style>
 </style>

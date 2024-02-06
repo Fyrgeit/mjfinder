@@ -4,6 +4,7 @@
     import { goto } from "$app/navigation";
     import { userInfoStore } from "../../store";
     import ClubPreview from "../../components/ClubPreview.svelte";
+    import { base } from "$app/paths";
 
     let userInfo;
     let newDescription;
@@ -23,7 +24,7 @@
 
     async function handleSignOut() {
         await auth.signOut();
-        goto("/");
+        goto(base + "/");
     }
 
     async function getClubs(clubs) {

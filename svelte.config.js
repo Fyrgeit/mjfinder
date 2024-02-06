@@ -9,17 +9,12 @@ const config = {
         // these options are set automatically — see below
         pages: 'docs',
         assets: 'docs/static',
-        fallback: "404.html",
+        fallback: `/404.html`,
         precompress: false,
         strict: true
     }),
     paths: {
-        base: "",
-        //Får errors som klagar (vet inte var) när base är "/mjfinder"
-        //Gör att alla länkar börjar med mjfinder/
-        //Error: 404 / does not begin with `base`, which is configured in `paths.base` and can be imported from `$app/paths` - see https://kit.svelte.dev/docs/configuration#paths for more info (linked from /mjfinder/)
-        //Försvinner om base är ""
-        relative: false
+        base: process.argv.includes('dev') ? '' : "/mjfinder",
     }
   },
 

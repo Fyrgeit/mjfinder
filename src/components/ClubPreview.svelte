@@ -1,5 +1,6 @@
 <script>
     import { userInfoStore } from "../store";
+    import { base } from "$app/paths";
 
     export let club;
 
@@ -9,19 +10,32 @@
     $: joined = club.data.members.map((m) => m.id).includes(userInfo?.uid);
 </script>
 
-<a href="/club/{club.uid}" class="blob hoverable">
+<a href="{base}/club/{club.uid}" class="blob hoverable">
     <header>
         <h2>{club.data.name}</h2>
         <div>
             {#if joined}
-                <img src="/check.svg" alt="" />
+                <img src="{base}/check.svg" alt="" />
             {/if}
-            <img src="/group.svg" alt="" />
+            <img src="{base}/group.svg" alt="" />
             <span>{club.data.members.length}</span>
         </div>
     </header>
-    <p>{club.data.desc}</p>
-    <p class="toned-down">{club.data.county}, {club.data.region}</p>
+    <section>
+        <article>
+            <p>{club.data.desc}</p>
+            <p class="toned-down">{club.data.county}, {club.data.region}</p>
+        </article>
+        {#if club.data.gauges}
+            <article class="tags">
+                {#each club.data.gauges as gauge}
+                    <span class="small button">
+                        {gauge}
+                    </span>
+                {/each}
+            </article>
+        {/if}
+    </section>
 </a>
 
 <style>
@@ -34,9 +48,15 @@
         align-items: center;
     }
 
-    header {
+    header, section {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         gap: 0.8rem;
+    }
+
+    .tags {
+        display: flex;
+        gap: 0.4rem;
     }
 </style>

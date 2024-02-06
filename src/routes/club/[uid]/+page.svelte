@@ -9,6 +9,7 @@
     import { db, updateUserData } from "../../../firebase";
     import { userInfoStore } from "../../../store";
     import { page } from "$app/stores";
+    import { base } from "$app/paths";
 
     let clubUid = $page.params.uid;
 
@@ -82,10 +83,23 @@
         <p>{club.desc}</p>
         <p class="toned-down">{club.county}, {club.region}</p>
         <br />
+        <p>Kontakt: {club.contact}</p>
+        <br />
+        {#if club.gauges}
+            <div class="tags">
+                Skalor:
+                {#each club.gauges as gauge}
+                    <span class="small button">
+                        {gauge}
+                    </span>
+                {/each}
+            </div>
+        {/if}
+        <br>
 
         {#if userInfo}
             {#if club.owner.id === userInfo?.uid}
-                <a href="/club/{clubUid}/manage" class="button">Hantera klubb</a
+                <a href="{base}/club/{clubUid}/manage" class="button">Hantera klubb</a
                 >
             {:else if club.members?.map((m) => m.id).includes(userInfo?.uid)}
                 <button class="hollow" on:click={leaveClub}>Lämna klubb</button>
@@ -106,9 +120,9 @@
                 {#each club.members as memberRef}
                     <li>
                         {#await getUser(memberRef)}
-                            <a href="/users/{memberRef.id}">Hämtar användare...</a>
+                            <a href="{base}/users/{memberRef.id}">Hämtar användare...</a>
                         {:then user}
-                            <a href="/users/{memberRef.id}">{user.username}</a>
+                            <a href="{base}/users/{memberRef.id}">{user.username}</a>
                         {/await}
                     </li>
                 {/each}
@@ -123,9 +137,9 @@
                 {#each club.applicants as applicantRef}
                     <li>
                         {#await getUser(applicantRef)}
-                            <a href="/users/{applicantRef.id}">Hämtar användare...</a>
+                            <a href="{base}/users/{applicantRef.id}">Hämtar användare...</a>
                         {:then user}
-                            <a href="/users/{applicantRef.id}">{user.username}</a>
+                            <a href="{base}/users/{applicantRef.id}">{user.username}</a>
                         {/await}
                     </li>
                 {/each}
@@ -141,5 +155,11 @@
 <style>
     h2 {
         margin-top: 0.8rem;
+    }
+
+    .tags {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
     }
 </style>

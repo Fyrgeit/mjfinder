@@ -3,6 +3,7 @@
     import { createUserWithEmailAndPassword } from "firebase/auth";
     import { doc, setDoc } from "firebase/firestore";
     import { goto } from "$app/navigation";
+    import { base } from "$app/paths";
 
     let username;
     let email;
@@ -13,8 +14,9 @@
             let cred = await createUserWithEmailAndPassword(auth, email, password);
             await setDoc(doc(db, "users", cred.user.uid), {
                 username: username,
+                description: ""
             });
-            goto("/");
+            goto(base + "/");
         } catch (error) {
             console.error(error.code);
         }

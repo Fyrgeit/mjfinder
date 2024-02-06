@@ -18,6 +18,7 @@
 
 *::-webkit-scrollbar {
     background-color: transparent;
+    width: 0.8rem;
 }
 
 *::-webkit-scrollbar-track {
@@ -26,7 +27,7 @@
 
 *::-webkit-scrollbar-thumb {
     background-color: var(--color-shadow-hover);
-    border: 0.3rem solid var(--color-background);
+    border-radius: 0.4rem;
 }
 
 body {

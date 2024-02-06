@@ -13,13 +13,12 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { regionsAndCounties } from "/src/regionsAndCounties.js";
+    import { base } from "$app/paths";
 
     let userInfo;
     userInfoStore.subscribe((val) => (userInfo = val));
 
     let uid = $page.params.uid;
-
-    let refreshVar = false;
 
     onMount(GetClub);
 
@@ -30,6 +29,7 @@
             desc: club.desc,
             region: club.region,
             county: club.county,
+            contact: club.contact,
         };
     }
 
@@ -43,35 +43,32 @@
         });
 
         await GetClub();
-        refreshVar = !refreshVar;
     }
-    
+
     async function addMember(memberRef) {
         await updateDoc(doc(db, "clubs", uid), {
             members: arrayUnion(memberRef),
             applicants: arrayRemove(memberRef),
         });
-        
+
         await updateDoc(memberRef, {
             joinedClubs: arrayUnion(doc(db, "clubs", uid)),
             appliedClubs: arrayRemove(doc(db, "clubs", uid)),
         });
-        
+
         await GetClub();
-        refreshVar = !refreshVar;
     }
-    
+
     async function denyMember(memberRef) {
         await updateDoc(doc(db, "clubs", uid), {
             applicants: arrayRemove(memberRef),
         });
-        
+
         await updateDoc(memberRef, {
             appliedClubs: arrayRemove(doc(db, "clubs", uid)),
         });
-        
+
         await GetClub();
-        refreshVar = !refreshVar;
     }
 
     async function deleteClub() {
@@ -89,7 +86,7 @@
 
         await deleteDoc(doc(db, "clubs", uid));
 
-        goto("/club");
+        goto(base + "/club");
     }
 
     async function saveChanges() {
@@ -104,11 +101,7 @@
             throw new Error("dont match");
         }
 
-        await updateDoc(doc(db, "clubs", uid), {
-            desc: formContent.desc,
-            region: formContent.region,
-            county: formContent.county,
-        });
+        await updateDoc(doc(db, "clubs", uid), formContent);
 
         await GetClub();
     }
@@ -121,9 +114,8 @@
         desc: "",
         region: "",
         county: "",
+        contact: "",
     };
-
-    //$: console.log(formContent);
 
     $: same =
         JSON.stringify(formContent) ===
@@ -131,6 +123,7 @@
             desc: club?.desc,
             region: club?.region,
             county: club?.county,
+            contact: club?.contact,
         });
 
     $: invalid = formContent.region === "" || formContent.county === "";
@@ -138,40 +131,60 @@
     let club = null;
 </script>
 
-<h1>{club?.name}</h1>
-<p>{club?.desc}</p>
-<p class="toned-down">{club?.county}, {club?.region}</p>
-<br />
-
-<form on:submit|preventDefault={saveChanges}>
-    <p>
-        <label for="desc">Kort beskrivning</label>
-        <input type="text" id="desc" bind:value={formContent.desc} />
-    </p>
-    <p>
-        <label for="region">Plats (region)</label>
-        <select
-            id="region"
-            bind:value={formContent.region}
-            on:change={(formContent.county = "")}
-        >
-            {#each regionsAndCounties.regions as region}
-                <option value={region.name}>{region.name}</option>
+{#if club}
+    <h1>{club?.name}</h1>
+    <p>{club?.desc}</p>
+    <p class="toned-down">{club?.county}, {club?.region}</p>
+    <br />
+    <p>Kontakt: {club?.contact}</p>
+    <br />
+    {#if club.gauges}
+        <div class="tags">
+            Skalor:
+            {#each club.gauges as gauge}
+                <p>
+                    <span>{gauge}</span>
+                    <button class="small">
+                        <img src="/delete.svg" alt="delete" />
+                    </button>
+                </p>
             {/each}
-        </select>
-    </p>
-    <p>
-        <label for="county">Plats (kommun)</label>
-        <select id="county" bind:value={formContent.county}>
-            {#each regionsAndCounties.counties.filter((c) => c.regionCode === regionsAndCounties.regions.find((r) => r.name === formContent.region)?.regionCode) as county}
-                <option value={county.name}>{county.name}</option>
-            {/each}
-        </select>
-    </p>
-    <button disabled={same || invalid}>Spara ändringar</button>
-</form>
+        </div>
+    {/if}
+    <br />
 
-{#key refreshVar}
+    <form on:submit|preventDefault={saveChanges}>
+        <p>
+            <label for="desc">Kort beskrivning</label>
+            <input type="text" id="desc" bind:value={formContent.desc} />
+        </p>
+        <p>
+            <label for="contact">Kontakt (e-mail)</label>
+            <input type="text" id="contact" bind:value={formContent.contact} />
+        </p>
+        <p>
+            <label for="region">Plats (region)</label>
+            <select
+                id="region"
+                bind:value={formContent.region}
+                on:change={(formContent.county = "")}
+            >
+                {#each regionsAndCounties.regions as region}
+                    <option value={region.name}>{region.name}</option>
+                {/each}
+            </select>
+        </p>
+        <p>
+            <label for="county">Plats (kommun)</label>
+            <select id="county" bind:value={formContent.county}>
+                {#each regionsAndCounties.counties.filter((c) => c.regionCode === regionsAndCounties.regions.find((r) => r.name === formContent.region)?.regionCode) as county}
+                    <option value={county.name}>{county.name}</option>
+                {/each}
+            </select>
+        </p>
+        <button disabled={same || invalid}>Spara ändringar</button>
+    </form>
+
     <h2>Medlemmar ({club?.members.length})</h2>
     {#if club?.members.length > 0}
         <ul>
@@ -228,12 +241,31 @@
     {:else}
         <p>Inga ansökande</p>
     {/if}
-{/key}
 
-<button class="hollow" on:click={deleteClub}>Ta bort klubb</button>
+    <br />
+    <button class="hollow" on:click={deleteClub}>Ta bort klubb</button>
+
+    <style>
+        h2 {
+            margin-top: 0.8rem;
+        }
+    </style>
+{:else}
+    <p>Laddar klubb...</p>
+{/if}
 
 <style>
-    h2 {
-        margin-top: 0.8rem;
+    .tags p {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    button.small {
+        display: flex;
+        padding: 0.2rem;
+    }
+
+    img {
+        height: 1rem;
     }
 </style>

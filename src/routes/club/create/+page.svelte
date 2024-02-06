@@ -4,6 +4,7 @@
     import { collection, addDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
     import { regionsAndCounties } from "/src/regionsAndCounties.js";
     import { goto } from "$app/navigation";
+    import { base } from "$app/paths";
 
     let userInfo;
     userInfoStore.subscribe((val) => (userInfo = val));
@@ -11,6 +12,7 @@
     let formContent = {
         name: "",
         desc: "",
+        contact: "",
         region: "",
         county: "",
     };
@@ -28,7 +30,7 @@
             ownedClubs: arrayUnion(ref),
         });
 
-        goto("/club");
+        goto(base + "/club");
     }
 </script>
 
@@ -50,6 +52,14 @@
                 type="text"
                 id="desc"
                 bind:value={formContent.desc}
+            />
+        </p>
+        <p>
+            <label for="contact">Kontakt (e-mail)</label>
+            <input
+                type="text"
+                id="contact"
+                bind:value={formContent.contact}
             />
         </p>
         <p>
