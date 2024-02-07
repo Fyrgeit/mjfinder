@@ -2,11 +2,12 @@
 
 :root {
     --color-background: #373d42;
-    --color-text: #e0e0e0;
+    --color-text: #ffffff;
     --color-toned-down: #909090;
     --color-primary: #08f;
     --color-shadow: #000000c0;
     --color-shadow-hover: #808080c0;
+    --color-error: #e04000;
 }
 
 * {
@@ -49,7 +50,8 @@ a:hover {
     text-decoration: underline;
 }
 
-ul {
+ul,
+form {
     display: flex;
     flex-direction: column;
     width: fit-content;
@@ -57,12 +59,12 @@ ul {
     margin: 0.4rem 0;
 }
 
-li {
-    list-style: none;
+form {
+    align-items: flex-start;
 }
 
-form {
-    width: fit-content;
+li {
+    list-style: none;
 }
 
 button,
@@ -104,12 +106,6 @@ button:hover,
     font-size: 0.8rem;
 }
 
-form p {
-    margin-bottom: 0.8rem;
-    display: flex;
-    flex-direction: column;
-}
-
 input,
 select,
 textarea {
@@ -129,8 +125,7 @@ textarea {
     cursor: default;
 }
 
-.blob,
-form {
+.blob {
     background-color: var(--color-background);
     padding: 0.8rem;
     border-radius: 0.4rem;
@@ -149,5 +144,11 @@ form {
     background-color: var(--color-primary);
     padding: 0.1rem 0.4rem;
     font-weight: 900;
+    border-radius: 99rem;
+}
+
+.error {
+    background-color: var(--color-error);
+    padding: 0.1rem 0.4rem;
     border-radius: 99rem;
 }

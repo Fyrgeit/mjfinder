@@ -7,9 +7,17 @@
     let email;
     let password;
 
+    let errorMessage = "";
+
     async function Submit() {
-        await signInWithEmailAndPassword(auth, email, password);
-        goto(base + "/");
+        errorMessage = "";
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            goto(base + "/");
+        } catch (error) {
+            errorMessage = error.code;
+        }
     }
 </script>
 
@@ -35,10 +43,12 @@
         />
     </p>
     <button>Logga in</button>
+    {#if errorMessage}
+        <p class="error">
+            Error: {errorMessage}
+        </p>
+    {/if}
 </form>
 
-<p>Inget konto än?</p>
+<p style="margin: 0.8rem 0rem 0.4rem;">Inget konto än?</p>
 <a href="{base}/signup" class="button">Skapa konto</a>
-
-<style>
-</style>

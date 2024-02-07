@@ -49,45 +49,47 @@
     });
 </script>
 
-<header>
-    <h1>Klubbar</h1>
-
-    <a href="{base}/club/create" class="button">Skapa en klubb</a>
-</header>
-
 <div id="main">
     <aside>
-        <form>
-            {#each regionsAndCounties.regions as region}
+            <form>
+                <p>Region</p>
+                {#each regionsAndCounties.regions as region}
                 <p>
                     <input
-                        type="checkbox"
-                        id={region.regionCode}
-                        bind:checked={selectedRegions[region.name]}
+                    type="checkbox"
+                    id={region.regionCode}
+                    bind:checked={selectedRegions[region.name]}
                     />
                     <label for={region.regionCode}>
                         {region.name}
                     </label>
                 </p>
-            {/each}
-        </form>
-        <form>
-            {#each gauges as gauge}
+                {/each}
+            </form>
+            <form>
+                <p>Skala</p>
+                {#each gauges as gauge}
                 <p>
                     <input
-                        type="checkbox"
-                        id={gauge}
-                        bind:checked={selectedGauges[gauge]}
+                    type="checkbox"
+                    id={gauge}
+                    bind:checked={selectedGauges[gauge]}
                     />
                     <label for={gauge}>
                         {gauge}
                     </label>
                 </p>
-            {/each}
-        </form>
+                {/each}
+            </form>
     </aside>
 
     <section>
+        <header>
+            <h1>Klubbar</h1>
+        
+            <a href="{base}/club/create" class="button">Skapa en klubb</a>
+        </header>
+
         {#if filteredClubs}
             <p>{filteredClubs?.length} klubbar matchar ditt urval</p>
             <ul>
@@ -111,29 +113,19 @@
         margin-bottom: 0.8rem;
     }
 
+    aside {
+        display: flex;
+        flex-direction: column;
+    }
+
     #main {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 0.8rem;
     }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        margin-bottom: 0.8rem;
-    }
-
     form p {
-        flex-direction: row;
-        justify-content: space-between;
-        margin: 0;
-        align-items: center;
-    }
-
-    form p label {
-        flex-grow: 1;
+        display: flex;
     }
 
     input {
