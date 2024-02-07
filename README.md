@@ -1,38 +1,36 @@
-# create-svelte
+#Tjänsteförmedlingsapp
+##(MJFinder)
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+##[Live på Github Pages](https://fyrgeit.github.io/mjfinder)
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm run dev #Testkör projektet (live update)
+npm run build #Bygg projektet (till /docs)
+npm run preview #Testkör builden
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+##Projektplan
+###Vad
+####Beskrivning
+En sida för att folk som är intresserade av att bygga modelljärnvägar ska kunna hitta varandra.
+####Features
+- Skapa en användare
+- Bygga upp en profil
+- Skapa en klubb
+- Bygga upp klubbens profil
+- Söka bland etablerade klubbar
+- Hitta matchningar med användare som vill starta en klubb
+- Ansöka till en klubb
+- Skicka meddelanden till klubbar och andra användare
+###Hur
+####Tekniker
+Utvecklingsmiljö: Node, Vite
+Frontend: SvelteKit
+Backend: Google Firebase
+Hosting: GitHub Pages
+###När
+####Tidplan (som jag inte följde alls)
+V3: Starta Svelte-projekt
+V4: Starta Firebase-databas och -authentication
+V5: Lägga till features (Skapa och redigera)
+V6: Lägga till features (Chattsystem)
