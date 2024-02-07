@@ -1,7 +1,7 @@
-#Tjänsteförmedlingsapp
-##(MJFinder)
+# Tjänsteförmedlingsapp
+## (MJFinder)
 
-##[Live på Github Pages](https://fyrgeit.github.io/mjfinder)
+## [Live på Github Pages](https://fyrgeit.github.io/mjfinder)
 
 ```bash
 npm run dev #Testkör projektet (live update)
