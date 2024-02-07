@@ -13,6 +13,7 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { regionsAndCounties } from "/src/regionsAndCounties.js";
+    import { gauges } from "/src/gauges.js";
     import { base } from "$app/paths";
 
     let userInfo;
@@ -110,6 +111,26 @@
         return (await getDoc(memberRef)).data();
     }
 
+    async function removeTag(e) {
+        const tag = e.target.previousElementSibling.innerText;
+
+        await updateDoc(doc(db, "clubs", uid), {
+            gauges: arrayRemove(tag),
+        });
+
+        await GetClub();
+    }
+
+    async function addTag() {
+        await updateDoc(doc(db, "clubs", uid), {
+            gauges: arrayUnion(selectedGauge),
+        });
+
+        await GetClub();
+
+        selectedGauge = "default";
+    }
+
     let formContent = {
         desc: "",
         region: "",
@@ -129,6 +150,7 @@
     $: invalid = formContent.region === "" || formContent.county === "";
 
     let club = null;
+    let selectedGauge = "default";
 </script>
 
 {#if club}
@@ -138,19 +160,37 @@
     <br />
     <p>Kontakt: {club?.contact}</p>
     <br />
-    {#if club.gauges}
-        <div class="tags">
-            Skalor:
-            {#each club.gauges as gauge}
+    <div class="tags">
+        Skalor:
+        {#if club.gauges}
+            {#each club.gauges as tags}
                 <p>
-                    <span>{gauge}</span>
-                    <button class="small">
+                    <span>{tags}</span>
+                    <button class="small icon" on:click={removeTag}>
                         <img src="/delete.svg" alt="delete" />
                     </button>
                 </p>
             {/each}
-        </div>
-    {/if}
+        {:else}
+        Inga skalor
+        {/if}
+    </div>
+    <div class="add">
+        <select bind:value={selectedGauge}>
+            <option disabled selected value="default">Välj skala</option>
+            {#each gauges as gauge}
+                <option value={gauge} disabled={club?.gauges?.includes(gauge)}
+                    >{gauge}</option
+                >
+            {/each}
+        </select>
+        <button
+            class="small"
+            disabled={selectedGauge == "default"}
+            on:click={addTag}
+            >Lägg till
+        </button>
+    </div>
     <br />
 
     <form on:submit|preventDefault={saveChanges}>
@@ -260,12 +300,21 @@
         gap: 0.4rem;
     }
 
-    button.small {
+    button.icon {
         display: flex;
         padding: 0.2rem;
     }
 
     img {
         height: 1rem;
+    }
+
+    button img {
+        pointer-events: none;
+    }
+
+    .add {
+        display: flex;
+        align-items: center;
     }
 </style>

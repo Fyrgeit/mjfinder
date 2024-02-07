@@ -55,47 +55,53 @@
     <a href="{base}/club/create" class="button">Skapa en klubb</a>
 </header>
 
-<form>
-    {#each regionsAndCounties.regions as region}
-        <p>
-            <label for={region.regionCode}>
-                {region.name}
-            </label>
-            <input
-                type="checkbox"
-                id={region.regionCode}
-                bind:checked={selectedRegions[region.name]}
-            />
-        </p>
-    {/each}
-</form>
-<form>
-    {#each gauges as gauge}
-        <p>
-            <label for={gauge}>
-                {gauge}
-            </label>
-            <input
-                type="checkbox"
-                id={gauge}
-                bind:checked={selectedGauges[gauge]}
-            />
-        </p>
-    {/each}
-</form>
+<div id="main">
+    <aside>
+        <form>
+            {#each regionsAndCounties.regions as region}
+                <p>
+                    <input
+                        type="checkbox"
+                        id={region.regionCode}
+                        bind:checked={selectedRegions[region.name]}
+                    />
+                    <label for={region.regionCode}>
+                        {region.name}
+                    </label>
+                </p>
+            {/each}
+        </form>
+        <form>
+            {#each gauges as gauge}
+                <p>
+                    <input
+                        type="checkbox"
+                        id={gauge}
+                        bind:checked={selectedGauges[gauge]}
+                    />
+                    <label for={gauge}>
+                        {gauge}
+                    </label>
+                </p>
+            {/each}
+        </form>
+    </aside>
 
-{#if filteredClubs}
-    <p>{filteredClubs?.length} klubbar matchar ditt urval</p>
-    <ul>
-        {#each filteredClubs as club}
-            <li>
-                <ClubPreview {club} />
-            </li>
-        {/each}
-    </ul>
-{:else}
-    <p>Laddar klubbar...</p>
-{/if}
+    <section>
+        {#if filteredClubs}
+            <p>{filteredClubs?.length} klubbar matchar ditt urval</p>
+            <ul>
+                {#each filteredClubs as club}
+                    <li>
+                        <ClubPreview {club} />
+                    </li>
+                {/each}
+            </ul>
+        {:else}
+            <p>Laddar klubbar...</p>
+        {/if}
+    </section>
+</div>
 
 <style>
     header {
@@ -105,8 +111,15 @@
         margin-bottom: 0.8rem;
     }
 
+    #main {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+    }
+
     form {
         display: flex;
+        flex-direction: column;
         flex-wrap: wrap;
         gap: 0.4rem;
         margin-bottom: 0.8rem;
@@ -125,5 +138,16 @@
 
     input {
         margin: 0.2rem;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: row;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    li {
+        flex-grow: 1;
     }
 </style>

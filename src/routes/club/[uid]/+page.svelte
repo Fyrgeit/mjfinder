@@ -89,7 +89,7 @@
             <div class="tags">
                 Skalor:
                 {#each club.gauges as gauge}
-                    <span class="small button">
+                    <span class="tag">
                         {gauge}
                     </span>
                 {/each}

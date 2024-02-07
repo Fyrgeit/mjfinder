@@ -3,6 +3,7 @@
 :root {
     --color-background: #373d42;
     --color-text: #e0e0e0;
+    --color-toned-down: #909090;
     --color-primary: #08f;
     --color-shadow: #000000c0;
     --color-shadow-hover: #808080c0;
@@ -33,6 +34,7 @@
 body {
     background-color: var(--color-background);
     height: 100vh;
+    overflow-x: hidden;
 }
 
 main {
@@ -97,7 +99,7 @@ button:hover,
 }
 
 .toned-down {
-    color: #808080;
+    color: var(--color-toned-down);
     font-weight: 700;
     font-size: 0.8rem;
 }
@@ -129,13 +131,23 @@ textarea {
 
 .blob,
 form {
+    background-color: var(--color-background);
     padding: 0.8rem;
     border-radius: 0.4rem;
     box-shadow: var(--color-shadow) 0 0 0.8rem;
     display: block;
+    transition: scale 100ms ease;
 }
 
 .blob.hoverable:hover {
     box-shadow: var(--color-shadow-hover) 0 0 0.8rem;
     text-decoration: none;
+    scale: 1.05;
+}
+
+.tag {
+    background-color: var(--color-primary);
+    padding: 0.1rem 0.4rem;
+    font-weight: 900;
+    border-radius: 99rem;
 }
