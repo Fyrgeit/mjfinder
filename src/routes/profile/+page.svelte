@@ -11,9 +11,9 @@
 
     userInfoStore.subscribe((val) => {
         userInfo = val;
+        newDescription = val?.data.description;
     });
     
-    $: newDescription = userInfo?.data.description;
     $: same = newDescription == userInfo?.data.description;
 
     async function saveInfo() {
